@@ -28,7 +28,7 @@ while True:
 
     result_frame = cv2.addWeighted(frame, 1, cross_image, 0.5, 0)
 
-    cv2.imshow("Red Cross", result_frame)
+    cv2.imshow("video", result_frame)
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break

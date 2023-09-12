@@ -18,9 +18,10 @@ def copyVideo():
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
+    
 
-    video.release()
-    video_writer.release()
+
+
     cv2.destroyAllWindows()
 
 copyVideo()
