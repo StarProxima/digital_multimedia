@@ -16,7 +16,7 @@ def readIPWriteTOFile():
         cv2.imshow('Video', vid)
         video_writer.write(vid)
 
-        if cv2.waitKey(1) & 0xFF == ord('q'):
+        if cv2.waitKey(1) & 0xFF == 27:
             break
 
     video.release()

@@ -13,14 +13,7 @@ def copyVideo():
         ok, vid = video.read()
         if not ok: break
 
-        # cv2.imshow('Video', vid)
         video_writer.write(vid)
-
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
-    
-
-
 
     cv2.destroyAllWindows()
 

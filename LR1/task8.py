@@ -12,31 +12,31 @@ while True:
 
     cross_image = np.zeros((height, width, 3), dtype=np.uint8)
 
-    vertical_line_width = 60
-    vertical_line_height = 300
+    vl_w = 60
+    vl_h = 300
     cv2.rectangle(cross_image,
-                  (width // 2 - vertical_line_width // 2, height // 2 - vertical_line_height // 2),
-                  (width // 2 + vertical_line_width // 2, height // 2 + vertical_line_height // 2),
+                  (width // 2 - vl_w // 2, height // 2 - vl_h // 2),
+                  (width // 2 + vl_w // 2, height // 2 + vl_h // 2),
                   (0, 0, 255), 2)
-    rect_start_v = (width // 2 - vertical_line_width // 2, height // 2 - vertical_line_height // 2)
-    rect_end_v = (width // 2 + vertical_line_width // 2, height // 2 + vertical_line_height // 2)
+    rect_start_v = (width // 2 - vl_w // 2, height // 2 - vl_h // 2)
+    rect_end_v = (width // 2 + vl_w // 2, height // 2 + vl_h // 2)
 
-    horizontal_line_width = 250
-    horizontal_line_height = 55
+    hl_w = 250
+    hl_h = 55
     cv2.rectangle(cross_image,
-                  (width // 2 - horizontal_line_width // 2, height // 2 - horizontal_line_height // 2),
-                  (width // 2 + horizontal_line_width // 2, height // 2 + horizontal_line_height // 2),
+                  (width // 2 - hl_w // 2, height // 2 - hl_h // 2),
+                  (width // 2 + hl_w // 2, height // 2 + hl_h // 2),
                   (0, 0, 255), 2)
 
-    rect_start_h = (width // 2 - horizontal_line_width // 2, height // 2 - horizontal_line_height // 2)
-    rect_end_h = (width // 2 + horizontal_line_width // 2, height // 2 + horizontal_line_height // 2)
+    rect_start_h = (width // 2 - hl_w // 2, height // 2 - hl_h // 2)
+    rect_end_h = (width // 2 + hl_w // 2, height // 2 + hl_h // 2)
 
-    central_pixel_color = frame[height // 2, width // 2]
+    cp_color = frame[height // 2, width // 2]
 
     color_distances = [
-        np.linalg.norm(central_pixel_color - np.array([0, 0, 255])),
-        np.linalg.norm(central_pixel_color - np.array([0, 255, 0])),
-        np.linalg.norm(central_pixel_color - np.array([255, 0, 0]))
+        np.linalg.norm(cp_color - np.array([0, 0, 255])),
+        np.linalg.norm(cp_color - np.array([0, 255, 0])),
+        np.linalg.norm(cp_color - np.array([255, 0, 0]))
     ]
 
     closest_color_index = np.argmin(color_distances)
