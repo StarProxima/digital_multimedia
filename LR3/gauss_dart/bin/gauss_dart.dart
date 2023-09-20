@@ -55,8 +55,8 @@ List<List<double>> gaussBlur(
 }
 
 double gauss(int x, int y, double omega, int a, int b) {
-  double omegaIn2 = 2 * omega * omega;
-  double m1 = 1 / (pi * omegaIn2);
-  double m2 = exp(-((pow(x - a, 2) + pow(y - b, 2)) / omegaIn2));
+  double omega2Pow2 = 2 * omega * omega;
+  double m1 = 1 / (pi * omega2Pow2);
+  double m2 = exp(-((pow(x - a, 2) + pow(y - b, 2)) / omega2Pow2));
   return m1 * m2;
 }
