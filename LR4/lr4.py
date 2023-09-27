@@ -3,18 +3,22 @@ import numpy as np
 
 window_index = 0
 
+
 def show_image(name, img):
     global window_index
     name += ' #' + str(window_index)
     cv2.imshow(name, img)
-    cv2.moveWindow(name, window_index % 5 * img.shape[1], window_index // 5 * (img.shape[0] + 30))
+    cv2.moveWindow(name, window_index %
+                   5 * img.shape[1], window_index // 5 * (img.shape[0] + 30))
     window_index += 1
 
 
 def task1(img, standard_deviation, kernel_size):
     imgBlurByCV2 = cv2.GaussianBlur(
         img, (kernel_size, kernel_size), standard_deviation)
-    show_image('gauss', imgBlurByCV2)
+    show_image('', imgBlurByCV2)
+    return imgBlurByCV2
+
 
 def task2(img, matr_gradient, img_angles):
     img_gradient_to_print = img.copy()
@@ -23,13 +27,14 @@ def task2(img, matr_gradient, img_angles):
         for j in range(img.shape[1]):
             img_gradient_to_print[i][j] = (
                 float(matr_gradient[i][j])/max_gradient)*255
-    show_image('img_gradient_to_print', img_gradient_to_print)
+    show_image('', img_gradient_to_print)
 
     img_angles_to_print = img.copy()
     for i in range(img.shape[0]):
         for j in range(img.shape[1]):
             img_angles_to_print[i][j] = img_angles[i][j]/7*255
-    show_image('img_angles_to_print', img_angles_to_print)
+    show_image('', img_angles_to_print)
+
 
 def task3(img, matr_gradient, img_angles):
     img_border_not_filtered = img.copy()
@@ -59,8 +64,9 @@ def task3(img, matr_gradient, img_angles):
                 is_max = gradient >= matr_gradient[i+y_shift][j +
                                                               x_shift] and gradient >= matr_gradient[i-y_shift][j-x_shift]
                 img_border_not_filtered[i][j] = 255 if is_max else 0
-    show_image('img_border_not_filtered', img_border_not_filtered)
+    show_image('', img_border_not_filtered)
     return img_border_not_filtered
+
 
 def task4(img, matr_gradient, img_border_not_filtered, bound_path):
     max_gradient = np.max(matr_gradient)
@@ -85,20 +91,23 @@ def task4(img, matr_gradient, img_border_not_filtered, bound_path):
                 elif (gradient > upper_bound):
                     img_border_filtered[i][j] = 255
 
-    show_image('img_border_filtered', img_border_filtered)
+    show_image('', img_border_filtered)
+
 
 def lr4(path, standard_deviation, kernel_size, bound_path):
     img = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
 
-    task1(img, standard_deviation, kernel_size)
+    img = task1(img, standard_deviation, kernel_size)
 
-  
-    # Операторы собеля
-    Gx = [[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]]
-    Gy = [[-1, -2, -1], [0, 0, 0], [1, 2, 1]]
+    gx = [[-1, 0, 1],
+          [-2, 0, 2],
+          [-1, 0, 1]]
+    gy = [[-1, -2, -1],
+          [0, 0, 0],
+          [1, 2, 1]]
 
-    img_Gx = convolution(img, Gx)
-    img_Gy = convolution(img, Gy)
+    img_gx = convolution(img, gx)
+    img_gy = convolution(img, gy)
 
     matr_gradient = np.zeros(img.shape)
     for i in range(img.shape[0]):
@@ -108,16 +117,15 @@ def lr4(path, standard_deviation, kernel_size, bound_path):
     for i in range(img.shape[0]):
         for j in range(img.shape[1]):
             matr_gradient[i][j] = np.sqrt(
-                img_Gx[i][j] ** 2 + img_Gy[i][j] ** 2)
+                img_gx[i][j] ** 2 + img_gy[i][j] ** 2)
 
     img_angles = img.copy()
     for i in range(img.shape[0]):
         for j in range(img.shape[1]):
-            img_angles[i][j] = get_angle_number(img_Gx[i][j], img_Gy[i][j])
+            img_angles[i][j] = get_angle_number(img_gx[i][j], img_gy[i][j])
 
     task2(img, matr_gradient, img_angles)
-  
-  
+
     img_border_not_filtered = task3(img, matr_gradient, img_angles)
 
     task4(img, matr_gradient, img_border_not_filtered, bound_path)
@@ -145,7 +153,11 @@ def convolution(img, kernel):
 
 
 def get_angle_number(x, y):
-    tg = y/x if x != 0 else 999
+
+    if x != 0:
+        tg = y/x
+    else:
+        tg = 3
 
     if (x < 0):
         if (y < 0):
@@ -177,7 +189,6 @@ def get_angle_number(x, y):
                 return 3
             elif (tg >= 2.414):
                 return 4
-
 
 
 if __name__ == "__main__":
