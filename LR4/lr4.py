@@ -9,7 +9,7 @@ def show_image(name, img):
     name += ' #' + str(window_index)
     cv2.imshow(name, img)
     cv2.moveWindow(name, window_index %
-                   5 * img.shape[1], window_index // 5 * (img.shape[0] + 30))
+                   3 * img.shape[1], window_index // 3 * (img.shape[0] + 30))
     window_index += 1
 
 
@@ -70,23 +70,23 @@ def task3(img, matr_gradient, img_angles):
 
 def task4(img, matr_gradient, img_border_not_filtered, bound_path):
     max_gradient = np.max(matr_gradient)
-    lower_bound = max_gradient/bound_path
-    upper_bound = max_gradient - max_gradient/bound_path
+    lower_bound = max_gradient / bound_path
+    upper_bound = max_gradient - max_gradient / bound_path
     img_border_filtered = np.zeros(img.shape)
     for i in range(img.shape[0]):
         for j in range(img.shape[1]):
             gradient = matr_gradient[i][j]
             if (img_border_not_filtered[i][j] == 255):
                 if (gradient >= lower_bound and gradient <= upper_bound):
-                    flag = False
+                    is_ok = False
                     for k in range(-1, 2):
                         for l in range(-1, 2):
-                            if (flag):
+                            if is_ok:
                                 break
                             if (img_border_not_filtered[i+k][j+l] == 255 and matr_gradient[i+k][j+l] >= lower_bound):
-                                flag = True
+                                is_ok = True
                                 break
-                    if (flag):
+                    if is_ok:
                         img_border_filtered[i][j] = 255
                 elif (gradient > upper_bound):
                     img_border_filtered[i][j] = 255
@@ -95,7 +95,11 @@ def task4(img, matr_gradient, img_border_not_filtered, bound_path):
 
 
 def lr4(path, standard_deviation, kernel_size, bound_path):
-    img = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
+    cap = cv2.VideoCapture(0)
+    ok, frame = cap.read()
+    img= cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)  
+
+    # img = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
 
     img = task1(img, standard_deviation, kernel_size)
 
@@ -122,7 +126,7 @@ def lr4(path, standard_deviation, kernel_size, bound_path):
     img_angles = img.copy()
     for i in range(img.shape[0]):
         for j in range(img.shape[1]):
-            img_angles[i][j] = get_angle_number(img_gx[i][j], img_gy[i][j])
+            img_angles[i][j] = calculate_direction(img_gx[i][j], img_gy[i][j])
 
     task2(img, matr_gradient, img_angles)
 
@@ -152,50 +156,45 @@ def convolution(img, kernel):
     return matr
 
 
-def get_angle_number(x, y):
+def calculate_direction(x, y):
+    if x==0: x = 0.001
+    tg = y/x
 
-    if x != 0:
-        tg = y/x
-    else:
-        tg = 3
-
-    if (x < 0):
-        if (y < 0):
-            if (tg > 2.414):
-                return 0
-            elif (tg < 0.414):
-                return 6
-            elif (tg <= 2.414):
-                return 7
-        else:
-            if (tg < -2.414):
-                return 4
-            elif (tg < -0.414):
-                return 5
-            elif (tg >= -0.414):
-                return 6
-    else:
-        if (y < 0):
-            if (tg < -2.414):
-                return 0
-            elif (tg < -0.414):
-                return 1
-            elif (tg >= -0.414):
-                return 2
-        else:
-            if (tg < 0.414):
-                return 2
-            elif (tg < 2.414):
-                return 3
-            elif (tg >= 2.414):
-                return 4
+    if x < 0 and y < 0:
+        if tg > 2.414:
+            return 0
+        elif tg < 0.414:
+            return 6
+        elif tg <= 2.414:
+            return 7
+    elif x < 0 and y >= 0:
+        if tg < -2.414:
+            return 4
+        elif tg < -0.414:
+            return 5
+        elif tg >= -0.414:
+            return 6
+    elif x > 0 and y < 0:
+        if tg < -2.414:
+            return 0
+        elif tg < -0.414:
+            return 1
+        elif tg >= -0.414:
+            return 2
+    elif x > 0 and y >= 0:
+        if tg < 0.414:
+            return 2
+        elif tg < 2.414:
+            return 3
+        elif tg >= 2.414:
+            return 4
 
 
 if __name__ == "__main__":
     # task('LR4/img.jpg', 1, 3, 15)
-    lr4('LR4/img.jpg', 10, 3, 15)
-    lr4('LR4/img.jpg', 10, 11, 6)
-    lr4('LR4/img.jpg', 100, 33, 55)
+    # lr4('LR4/img.jpg', 10, 3, 4)
+    lr4('LR4/img.jpg', 10, 9, 8)
+    # lr4('LR4/img.jpg', 10, 3, 55)
     while True:
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
